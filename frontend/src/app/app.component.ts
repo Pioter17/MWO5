@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { BgcolorManagerService } from './core/services/bgcolor-manager.service';
 
 @Component({
@@ -9,12 +10,17 @@ import { BgcolorManagerService } from './core/services/bgcolor-manager.service';
 export class AppComponent implements OnInit{
   title = 'WeatherForecast';
   backgroundColor: string;
+  env = environment;
+
+  configName: string;
+  apiUrl: string;
+  isProduction: boolean;
+  buildOptimizer: boolean;
 
   constructor(
     private bgcolor: BgcolorManagerService,
     private renderer: Renderer2,
-    private el: ElementRef
-  ) {}
+    private el: ElementRef) {  }
 
   ngOnInit(): void {
     this.bgcolor.getBackgroundColor().subscribe((color) => {
