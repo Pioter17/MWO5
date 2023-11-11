@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
 import { filter } from 'rxjs';
 import { Director } from '../../interfaces/director';
 import { ApiDirectorService } from '../../services/api-director.service';
@@ -16,6 +17,8 @@ export class DisplayDirectorsComponent {
   filtered = false;
   directors: Director[] = [];
   search: string;
+  displayedColumns: string[] = ['Imie i nazwisko', 'narodowosc', 'wiek', 'buttons'];
+  @ViewChild(MatTable) table: MatTable<Director>;
 
   constructor(
     private dialog: MatDialog,
@@ -23,7 +26,7 @@ export class DisplayDirectorsComponent {
 
   api = inject(ApiDirectorService);
 
-  showDirectors(){
+  private showDirectors(){
     this.show = true;
   }
 
@@ -40,6 +43,7 @@ export class DisplayDirectorsComponent {
       res.forEach((elem) => {
         this.directors.push(elem);
       })
+      this.table.renderRows();
     })
   }
 
@@ -50,6 +54,7 @@ export class DisplayDirectorsComponent {
       res.forEach((elem) => {
         this.directors.push(elem);
       })
+      this.table.renderRows();
     })
   }
 
@@ -67,6 +72,7 @@ export class DisplayDirectorsComponent {
           let newDirector: Director = response;
           this.directors.push(newDirector);
         },);
+        this.table.renderRows();
     });
   }
 
@@ -87,7 +93,7 @@ export class DisplayDirectorsComponent {
         (response) => {
           let newDirector: Director = response;
           this.directors[index] = newDirector;
-          console.log('Film został zedytowany');
+          this.table.renderRows();
         }
       )
     });
@@ -104,7 +110,7 @@ export class DisplayDirectorsComponent {
     ).subscribe(() => {
       this.api.deleteDirector(id).subscribe(
         (response) => {
-          console.log('Film został usunięty');
+          this.table.renderRows();
         },);
       this.directors.splice(index, 1);
     });

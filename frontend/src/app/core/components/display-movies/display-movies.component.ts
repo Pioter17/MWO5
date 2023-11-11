@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { filter } from 'rxjs';
 import { Movie, MovieResponse } from '../../interfaces/movie';
@@ -6,6 +6,7 @@ import { ApiMovieService } from '../../services/api-movie-service.service';
 import { AddMovieDialogComponent } from '../add-movie-dialog/add-movie-dialog.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'app-display-movies',
@@ -18,6 +19,8 @@ export class DisplayMoviesComponent {
   movies: Movie[] = [];
   displayedMovies: Movie[] = [];
   search: string;
+  displayedColumns: string[] = ['tytul', 'rezyser', 'producent', 'dlugosc', 'ocena', 'buttons'];
+  @ViewChild(MatTable) table: MatTable<Movie>;
 
   constructor(
     private dialog: MatDialog,
@@ -46,6 +49,7 @@ export class DisplayMoviesComponent {
       for(let i=1; i<11;i++){
         this.displayedMovies.push(this.movies[i])
       }
+      this.table.renderRows();
     })
   }
 
@@ -60,6 +64,7 @@ export class DisplayMoviesComponent {
       for(let i=1; i<11;i++){
         this.displayedMovies.push(this.movies[i])
       }
+      this.table.renderRows();
     })
   }
 
@@ -76,7 +81,7 @@ export class DisplayMoviesComponent {
         (response) => {
           let newMovie: Movie = response.data;
           this.movies.push(newMovie);
-          console.log('Film został dodany');
+          this.table.renderRows();
         },);
     });
   }
@@ -99,7 +104,7 @@ export class DisplayMoviesComponent {
           let newMovie: Movie = response.data;
           console.log(newMovie)
           this.displayedMovies[index] = newMovie;
-          console.log('Film został zedytowany');
+          this.table.renderRows();
         }
       )
     });
@@ -116,7 +121,7 @@ export class DisplayMoviesComponent {
     ).subscribe(() => {
       this.api.deleteMovie(id).subscribe(
         (response) => {
-          console.log('Film został usunięty');
+          this.table.renderRows();
         },);
       this.displayedMovies.splice(index, 1);
     });

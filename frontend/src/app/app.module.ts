@@ -21,6 +21,7 @@ import { ConfirmationDialogComponent } from './core/components/confirmation-dial
 import { DisplayDirectorsComponent } from './core/components/display-directors/display-directors.component';
 import { AddDirectorDialogComponent } from './core/components/add-director-dialog/add-director-dialog.component';
 import { MatPaginatorModule} from '@angular/material/paginator';
+import { MatTableModule} from '@angular/material/table';
 
 
 @NgModule({
@@ -32,7 +33,7 @@ import { MatPaginatorModule} from '@angular/material/paginator';
     AddMovieDialogComponent,
     ConfirmationDialogComponent,
     DisplayDirectorsComponent,
-    AddDirectorDialogComponent
+    AddDirectorDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +47,8 @@ import { MatPaginatorModule} from '@angular/material/paginator';
     BrowserAnimationsModule,
     MatDialogModule,
     FormsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTableModule
   ],
   providers: [
     {
