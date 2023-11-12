@@ -6,6 +6,7 @@ import { Director } from '../../interfaces/director';
 import { ApiDirectorService } from '../../services/api-director.service';
 import { AddDirectorDialogComponent } from '../add-director-dialog/add-director-dialog.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-display-directors',
@@ -16,6 +17,7 @@ export class DisplayDirectorsComponent {
   show = false;
   filtered = false;
   directors: Director[] = [];
+  displayedDirectors: Director[] = [];
   search: string;
   displayedColumns: string[] = ['Imie i nazwisko', 'narodowosc', 'wiek', 'buttons'];
   @ViewChild(MatTable) table: MatTable<Director>;
@@ -25,6 +27,32 @@ export class DisplayDirectorsComponent {
   ){}
 
   api = inject(ApiDirectorService);
+
+  length = 40
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [5, 10];
+
+  hidePageSize = true;
+  showPageSizeOptions = true;
+  showFirstLastButtons = true;
+  disabled = false;
+
+  pageEvent: PageEvent;
+
+  handlePageEvent(e: PageEvent) {
+    this.displayedDirectors = [];
+    this.pageEvent = e;
+    this.length = e.length;
+    this.pageSize = 10;
+    this.pageIndex = e.pageIndex;
+    for(let i=this.pageIndex*10; i<this.pageIndex*10+10;i++){
+      if(this.directors[i]){
+        this.displayedDirectors.push(this.directors[i])
+      }
+    }
+  }
+
 
   private showDirectors(){
     this.show = true;
@@ -38,11 +66,19 @@ export class DisplayDirectorsComponent {
     this.search = "";
     this.filtered = false;
     this.directors = [];
+    this.displayedDirectors = [];
     this.showDirectors();
+    this.pageIndex = 0;
     this.api.getDirectors().subscribe((res) => {
       res.forEach((elem) => {
         this.directors.push(elem);
       })
+      this.length = this.directors.length;
+      for(let i=0; i<10;i++){
+        if(this.directors[i]){
+          this.displayedDirectors.push(this.directors[i])
+        }
+      }
       this.table.renderRows();
     })
   }
@@ -50,10 +86,18 @@ export class DisplayDirectorsComponent {
   getFilteredDirectors(){
     this.filtered = true;
     this.directors = [];
+    this.displayedDirectors = [];
+    this.pageIndex = 0;
     this.api.getFilteredDirectors(this.search).subscribe((res) => {
       res.forEach((elem) => {
         this.directors.push(elem);
       })
+      this.length = this.directors.length;
+      for(let i=0; i<10;i++){
+        if(this.directors[i]){
+          this.displayedDirectors.push(this.directors[i])
+        }
+      }
       this.table.renderRows();
     })
   }
@@ -71,8 +115,15 @@ export class DisplayDirectorsComponent {
         (response) => {
           let newDirector: Director = response;
           this.directors.push(newDirector);
+          this.length += 1;
+          this.displayedDirectors = [];
+          for(let i=this.pageIndex*10; i<this.pageIndex*10+10;i++){
+            if(this.directors[i]){
+              this.displayedDirectors.push(this.directors[i])
+            }
+          }
+          this.table.renderRows();
         },);
-        this.table.renderRows();
     });
   }
 
@@ -81,7 +132,7 @@ export class DisplayDirectorsComponent {
       minWidth: '400px',
       minHeight: '300px',
       data:{
-        ...this.directors[index],
+        ...this.displayedDirectors[index],
         isEdit: true,
       }
     });
@@ -92,7 +143,8 @@ export class DisplayDirectorsComponent {
       this.api.putDirector(id, res).subscribe(
         (response) => {
           let newDirector: Director = response;
-          this.directors[index] = newDirector;
+          this.displayedDirectors[index] = newDirector;
+          this.directors[this.pageSize*this.pageIndex+index] = newDirector;
           this.table.renderRows();
         }
       )
@@ -110,9 +162,12 @@ export class DisplayDirectorsComponent {
     ).subscribe(() => {
       this.api.deleteDirector(id).subscribe(
         (response) => {
+          this.length -= 1;
           this.table.renderRows();
         },);
-      this.directors.splice(index, 1);
+        this.displayedDirectors.splice(index, 1);
+        this.directors.splice(this.pageSize*this.pageIndex+index,1);
+        this.pageSize -= 1;
     });
   }
 }

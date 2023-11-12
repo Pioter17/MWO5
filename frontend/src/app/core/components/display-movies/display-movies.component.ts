@@ -28,6 +28,31 @@ export class DisplayMoviesComponent {
 
   api = inject(ApiMovieService);
 
+  length = 40
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [5, 10];
+
+  hidePageSize = true;
+  showPageSizeOptions = true;
+  showFirstLastButtons = true;
+  disabled = false;
+
+  pageEvent: PageEvent;
+
+  handlePageEvent(e: PageEvent) {
+    this.displayedMovies = [];
+    this.pageEvent = e;
+    this.length = e.length;
+    this.pageSize = 10;
+    this.pageIndex = e.pageIndex;
+    for(let i=this.pageIndex*10; i<this.pageIndex*10+10;i++){
+      if(this.movies[i]){
+        this.displayedMovies.push(this.movies[i])
+      }
+    }
+  }
+
   showMovies(){
     this.show = true;
   }
@@ -37,17 +62,20 @@ export class DisplayMoviesComponent {
   }
 
   getMovies(){
-
     this.filtered = false;
     this.movies = [];
     this.displayedMovies = [];
     this.showMovies();
+    this.pageIndex = 0;
     this.api.getMovies().subscribe((res) => {
       res.forEach((elem) => {
         this.movies.push(elem);
       })
-      for(let i=1; i<11;i++){
-        this.displayedMovies.push(this.movies[i])
+      this.length = this.movies.length;
+      for(let i=0; i<10;i++){
+        if(this.movies[i]){
+          this.displayedMovies.push(this.movies[i]);
+        }
       }
       this.table.renderRows();
     })
@@ -57,12 +85,16 @@ export class DisplayMoviesComponent {
     this.filtered = true;
     this.movies = [];
     this.displayedMovies = [];
+    this.pageIndex = 0;
     this.api.getFilteredMovies(this.search).subscribe((res) => {
       res.forEach((elem) => {
         this.movies.push(elem);
       })
-      for(let i=1; i<11;i++){
-        this.displayedMovies.push(this.movies[i])
+      this.length = this.movies.length;
+      for(let i=0; i<10;i++){
+        if(this.movies[i]){
+          this.displayedMovies.push(this.movies[i]);
+        }
       }
       this.table.renderRows();
     })
@@ -81,6 +113,13 @@ export class DisplayMoviesComponent {
         (response) => {
           let newMovie: Movie = response.data;
           this.movies.push(newMovie);
+          this.length += 1;
+          this.displayedMovies = [];
+          for(let i=this.pageIndex*10; i<this.pageIndex*10+10;i++){
+            if(this.movies[i]){
+              this.displayedMovies.push(this.movies[i])
+            }
+          }
           this.table.renderRows();
         },);
     });
@@ -91,7 +130,7 @@ export class DisplayMoviesComponent {
       minWidth: '400px',
       minHeight: '300px',
       data:{
-        ...this.movies[index],
+        ...this.displayedMovies[index],
         isEdit: true,
       }
     });
@@ -102,8 +141,8 @@ export class DisplayMoviesComponent {
       this.api.putMovie(id, res).subscribe(
         (response : MovieResponse) => {
           let newMovie: Movie = response.data;
-          console.log(newMovie)
           this.displayedMovies[index] = newMovie;
+          this.movies[this.pageSize*this.pageIndex+index] = newMovie;
           this.table.renderRows();
         }
       )
@@ -121,35 +160,14 @@ export class DisplayMoviesComponent {
     ).subscribe(() => {
       this.api.deleteMovie(id).subscribe(
         (response) => {
+          this.length -= 1;
           this.table.renderRows();
         },);
       this.displayedMovies.splice(index, 1);
+      this.movies.splice(this.pageSize*this.pageIndex+index,1);
+      this.pageSize -= 1;
     });
   }
 
-  length = 40
-  pageSize = 10;
-  pageIndex = 0;
-  pageSizeOptions = [5, 10];
 
-  hidePageSize = true;
-  showPageSizeOptions = true;
-  showFirstLastButtons = true;
-  disabled = false;
-
-  pageEvent: PageEvent;
-
-  handlePageEvent(e: PageEvent) {
-    this.displayedMovies = [];
-    this.pageEvent = e;
-    this.length = e.length;
-    this.pageSize = e.pageSize;
-    this.pageIndex = e.pageIndex;
-    for(let i=this.pageIndex*this.pageSize+1; i<this.pageIndex*this.pageSize+11;i++){
-      if(this.movies[i]){
-        this.displayedMovies.push(this.movies[i])
-      }
-
-    }
-  }
 }

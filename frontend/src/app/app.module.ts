@@ -22,6 +22,7 @@ import { DisplayDirectorsComponent } from './core/components/display-directors/d
 import { AddDirectorDialogComponent } from './core/components/add-director-dialog/add-director-dialog.component';
 import { MatPaginatorModule} from '@angular/material/paginator';
 import { MatTableModule} from '@angular/material/table';
+import { MyInfoComponent } from './shared/UI/my-info/my-info.component';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { MatTableModule} from '@angular/material/table';
     ConfirmationDialogComponent,
     DisplayDirectorsComponent,
     AddDirectorDialogComponent,
+    MyInfoComponent
   ],
   imports: [
     BrowserModule,
