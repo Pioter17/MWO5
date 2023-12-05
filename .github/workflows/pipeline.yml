@@ -1,0 +1,29 @@
+name: Java CI with Selenium
+
+on:
+  pull_request:
+    branches:
+      - main  # lub inna gałąź, na której chcesz uruchamiać pipeline
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Możesz wybrać inny system operacyjny
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'  # Możesz dostosować wersję Java do swoich potrzeb
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Run Selenium tests
+        run: |
+          # Dodaj tutaj komendy potrzebne do uruchomienia testów Selenium, np.
+          # java -jar ścieżka/do/twojego/projektu-selenium.jar
+
+    # Dodaj inne kroki konieczne do uruchomienia Twojego środowiska, takie jak instalacja zależności, uruchomienie środowiska, itp.
