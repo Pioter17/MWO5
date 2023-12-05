@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Director Management</title>
+</head>
+<body>
+<h1>Director Management</h1>
+
+<!-- Form for Adding or Updating Director -->
+<form id="directorForm">
+  <input type="hidden" name="id" id="id" />
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" required>
+
+  <label for="nationality">Nationality:</label>
+  <input type="text" id="nationality" name="nationality" required>
+
+  <label for="age">Age:</label>
+  <input type="number" id="age" name="age" required>
+
+  <button type="button" onclick="submitDirectorForm()">Save Director</button>
+</form>
+
+<!-- Table for Displaying Directors -->
+<table border="1" id="directorTable">
+  <thead>
+  <tr>
+    <th id="thid">ID</th>
+    <th id="thname">Name</th>
+    <th id="thnationality">Nationality</th>
+    <th id="thage">Age</th>
+    <th id="thactions">Actions</th>
+  </tr>
+  </thead>
+  <tbody id="directorTableBody"></tbody>
+</table>
+
+<script>
+  // Fetch and display directors on page load
+  window.onload = function () {
+      fetchDirectors();
+  };
+
+  // Function to fetch directors from the API and display them in the table
+  function fetchDirectors() {
+      fetch('http://localhost:8080/directors')
+          .then(response => response.json())
+          .then(data => {
+              const directorTableBody = document.getElementById('directorTableBody');
+              directorTableBody.innerHTML = '';
+
+              data.forEach(director => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                      <td>${director.id}</td>
+                      <td>${director.name}</td>
+                      <td>${director.nationality}</td>
+                      <td>${director.age}</td>
+                      <td>
+                          <button onclick="editDirector(${director.id})">Edit</button>
+                          <button onclick="deleteDirector(${director.id})">Delete</button>
+                      </td>
+                  `;
+                  directorTableBody.appendChild(row);
+              });
+          })
+          .catch(error => console.error('Error fetching directors:', error));
+  }
+
+  // Function to submit the director form (for both adding and updating)
+  function submitDirectorForm() {
+      const directorForm = document.getElementById('directorForm');
+      const formData = new FormData(directorForm);
+
+      const directorData = {
+          name: formData.get('name'),
+          nationality: formData.get('nationality'),
+          age: formData.get('age')
+      };
+
+      const directorId = formData.get('id');
+
+      console.log(directorId)
+
+      if (directorId) {
+          // If directorId is present, it's an update
+          updateDirector(directorId, directorData);
+      } else {
+          // If directorId is not present, it's an add
+          addDirector(directorData);
+      }
+  }
+
+  // Function to add a new director
+  function addDirector(directorData) {
+      fetch('http://localhost:8080/directors', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(directorData),
+      })
+          .then(response => response.json())
+          .then(data => {
+              console.log('Director added:', data);
+              fetchDirectors(); // Refresh the table after adding
+          })
+          .catch(error => console.error('Error adding director:', error));
+  }
+
+  // Function to update an existing director
+  function updateDirector(directorId, directorData) {
+      fetch(`http://localhost:8080/directors/${directorId}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(directorData),
+      })
+          .then(response => response.json())
+          .then(data => {
+              console.log('Director updated:', data);
+              fetchDirectors(); // Refresh the table after updating
+          })
+          .catch(error => console.error('Error updating director:', error));
+  }
+
+  // Function to edit a director
+  function editDirector(directorId) {
+      fetch(`http://localhost:8080/directors/${directorId}`)
+          .then(response => response.json())
+          .then(data => {
+              const directorForm = document.getElementById('directorForm');
+              directorForm.reset();
+              Object.keys(data).forEach(key => {
+                  const input = directorForm.querySelector(`[name="${key}"]`);
+                  if (input) {
+                      input.value = data[key];
+                  }
+              });
+              document.getElementById('id').value = data.id;
+          })
+          .catch(error => console.error('Error fetching director for editing:', error));
+  }
+
+  // Function to delete a director
+  function deleteDirector(directorId) {
+      if (true) {
+          fetch(`http://localhost:8080/directors/${directorId}`, {
+              method: 'DELETE',
+          })
+              .then(response => response.json())
+              .then(data => {
+                  console.log('Director deleted:', data);
+                  fetchDirectors(); // Refresh the table after deleting
+              })
+              .catch(error => console.error('Error deleting director:', error));
+      }
+  }
+</script>
+</body>
+</html>

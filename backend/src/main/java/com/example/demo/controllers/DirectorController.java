@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.models.Director;
-import com.example.demo.models.Movie;
 import com.example.demo.other.ServiceResponse;
 import com.example.demo.repositories.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/directors")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:8080")
 public class DirectorController {
     private final DirectorRepository directorRepository;
 
@@ -31,21 +28,10 @@ public class DirectorController {
         return directorRepository.findAll();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Director>> searchMovies(@RequestParam("name") String name) {
-        List<Director> directors = directorRepository.findAll();
-        String fragmentLowerCase = name.toLowerCase();
-
-        List<Director> matchingDirectors = directors
-                .stream()
-                .filter(director -> director.getName().toLowerCase().contains(fragmentLowerCase))
-                .collect(Collectors.toList());
-
-        if (matchingDirectors.isEmpty()) {
-            return ResponseEntity.ok(Collections.emptyList());
-        } else {
-            return ResponseEntity.ok(matchingDirectors);
-        }
+    @GetMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public Optional<Director> getDirectorById(@PathVariable Long id) {
+        return directorRepository.findById(id);
     }
 
     @PostMapping
@@ -64,7 +50,6 @@ public class DirectorController {
             existingDirector.setName(updatedDirector.getName());
             existingDirector.setNationality(updatedDirector.getNationality());
             existingDirector.setAge(updatedDirector.getAge());
-            existingDirector.setMovies(updatedDirector.getMovies());
             Director updatedDirectorResult = directorRepository.save(existingDirector);
             return ResponseEntity.ok(updatedDirectorResult);
         } else {

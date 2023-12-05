@@ -1,6 +1,5 @@
 package com.example.demo.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -10,30 +9,25 @@ import java.util.List;
 @Table(name = "director")
 public class Director {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String name;
 
     private String nationality;
-    @OneToMany(mappedBy = "director")
-    @JsonIgnore
-    private List<Movie> movies = new ArrayList<>();
 
     private double age;
 
-    public Director(Long id, String name, String nationality, List<Movie> movies, double age) {
+    public Director(Long id, String name, String nationality, double age) {
         this.id = id;
         this.name = name;
         this.nationality = nationality;
-        this.movies = movies;
         this.age = age;
     }
 
-    public Director(String name, String nationality, List<Movie> movies, double age) {
+    public Director(String name, String nationality, double age) {
         this.name = name;
         this.nationality = nationality;
-        this.movies = movies;
         this.age = age;
     }
 
@@ -63,14 +57,6 @@ public class Director {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
-    }
-
-    public List<Movie> getMovies() {
-        return movies;
-    }
-
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
     }
 
     public double getAge() {
