@@ -1,29 +1,72 @@
-name: Java CI with Selenium
+# name: Java CI with Selenium
+
+# on:
+#   pull_request:
+#     branches:
+#       - main  # lub inna gałąź, na której chcesz uruchamiać pipeline
+
+# jobs:
+#   build-and-test:
+#     runs-on: ubuntu-latest  # Możesz wybrać inny system operacyjny
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Set up Java
+#         uses: actions/setup-java@v2
+#         with:
+#           java-version: '17'  # Możesz dostosować wersję Java do swoich potrzeb
+
+#       - name: Build with Maven
+#         run: mvn clean install
+
+#       - name: Run Selenium tests
+#         run: |
+#           # Dodaj tutaj komendy potrzebne do uruchomienia testów Selenium, np.
+#           # java -jar ścieżka/do/twojego/projektu-selenium.jar
+
+name: Java CI with Maven and Selenium
 
 on:
   pull_request:
     branches:
-      - main  # lub inna gałąź, na której chcesz uruchamiać pipeline
+      - '*'
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest  # Możesz wybrać inny system operacyjny
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+      
+    - uses: browser-actions/setup-chrome@latest
+    - run: chrome --version
+    
+    - name: Test with Maven
+      run: mvn -B clean test
 
-      - name: Set up Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'  # Możesz dostosować wersję Java do swoich potrzeb
-
-      - name: Build with Maven
-        run: mvn clean install
-
-      - name: Run Selenium tests
-        run: |
-          # Dodaj tutaj komendy potrzebne do uruchomienia testów Selenium, np.
-          # java -jar ścieżka/do/twojego/projektu-selenium.jar
+    - name: The job has failed
+      uses: stefanstranger/azuredevops-bug-action@1.1
+      if: failure()
+      with:
+        OrganizationName: "MWO2023Z"
+        PAT: "PAT"
+        ProjectName: "mwo-projekt"
+        AreaPath: "mwo-projekt"
+        IterationPath: "mwo-projekt"
+        GithubToken: "GithubToken"
+        WorkflowFileName: "maven.yml"
+      env:
+        PAT: ${{ secrets.DEVOPSPAT}}
+        GithubToken: ${{ secrets.GITHUBTOKEN}}
 
     # Dodaj inne kroki konieczne do uruchomienia Twojego środowiska, takie jak instalacja zależności, uruchomienie środowiska, itp.
