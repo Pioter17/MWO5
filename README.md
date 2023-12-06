@@ -43,7 +43,7 @@ Ustawienie osobistego tokena na githubie oraz zapisanie secretów tj. tokena z g
 
 ## Działanie integracji GitHub Actions z Azure DevOps
 
-Plik pipeline.yml
+Plik pipeline.yml zapewniający integrację
 ![](zdj/plik-yml.png)
 
 Pull request gdy testy przechodzą (nie generuje raportu o błędzie)
