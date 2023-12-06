@@ -2,7 +2,7 @@
 # Projekt - MWO5 - Instrukcja
 
 
-# Uruchomienie
+## Uruchomienie
 
 Żeby uruchomić program należy mieć zainstalowaną javę 17 oraz maven. Do uruchomienia służy komenda
 ```copyable
@@ -17,30 +17,31 @@ Do uruchomienia testów służy komenda
 mvn test
 ```
 
-# Aplikacja
+## Aplikacja
 
 Po uruchomieniu aplikacji można ją zobaczyć pod adresem ```http://localhost:8080/index.html```. Zawiera ona wszystkie wymagane funkcje, tj. umożliwia wykonanie operacji CRUD - tworzenia, odczytywania, zmiany oraz usuwania rekordu.
 
-# Testy Selenium
+![](zdj/workingapp.png)
+## Testy Selenium
 
 Poniżej przedstawiam zdjęcie działających testów
 ![](zdj/testpassed.png)
 
-# Konfiguracja Azure DevOps
+## Konfiguracja Azure DevOps
 
 Poniżej przedstawiam skonfigurowanie projektu oraz ustawienie osobistego tokena na platformie Azure DevOps.
 
 ![](zdj/azureconfig.png)
 ![](zdj/azuretoken.png)
 
-# Konfiguracja GitHub Actions
+## Konfiguracja GitHub Actions
 
 Ustawienie osobistego tokena na githubie oraz zapisanie secretów tj. tokena z githuba oraz azure.
 
 ![](zdj/githubtoken.png)
 ![](zdj/secrets.png)
 
-# Działanie integracji GitHub Actions z Azure DevOps
+## Działanie integracji GitHub Actions z Azure DevOps
 
 Plik pipeline.yml
 ![](zdj/plik-yml.png)
