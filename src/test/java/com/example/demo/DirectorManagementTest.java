@@ -12,13 +12,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -34,8 +37,13 @@ public class DirectorManagementTest {
     @BeforeAll
     public static void setUp() {
         WebDriverManager.firefoxdriver().setup();
-        // Skonfiguruj i inicjalizuj przeglądarkę
-//        System.setProperty("webdriver.chrome.driver", "ścieżka/do/twojego/chromedriver.exe");
+        Map<String, String> environment = new HashMap<>();
+        environment.put("DISPLAY", ":1");
+        GeckoDriverService service = new GeckoDriverService.Builder()
+                .usingAnyFreePort()
+                .withEnvironment(environment)
+                .build();
+        FirefoxDriver driver = new FirefoxDriver(service);
 
         driver = new FirefoxDriver();
         driver.manage().window().maximize();
