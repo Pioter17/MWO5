@@ -46,28 +46,28 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
-      # run: mvn clean install
+      # run: mvn -B package --file pom.xml
+      run: mvn clean package
       
-    - uses: browser-actions/setup-chrome@latest
-    - run: chrome --version
+    # - uses: browser-actions/setup-chrome@latest
+    # - run: chrome --version
     
-    - name: Test with Maven
-      run: mvn -B clean test
+    # - name: Test with Maven
+    #   run: mvn -B clean test
 
-    - name: The job has failed
-      uses: stefanstranger/azuredevops-bug-action@1.1
-      if: failure()
-      with:
-        OrganizationName: "MWO2023Z"
-        PAT: "PAT"
-        ProjectName: "mwo-projekt"
-        AreaPath: "mwo-projekt"
-        IterationPath: "mwo-projekt"
-        GithubToken: "GithubToken"
-        WorkflowFileName: "maven.yml"
-      env:
-        PAT: ${{ secrets.DEVOPSPAT}}
-        GithubToken: ${{ secrets.GITHUBTOKEN}}
+    # - name: The job has failed
+    #   uses: stefanstranger/azuredevops-bug-action@1.1
+    #   if: failure()
+    #   with:
+    #     OrganizationName: "MWO2023Z"
+    #     PAT: "PAT"
+    #     ProjectName: "mwo-projekt"
+    #     AreaPath: "mwo-projekt"
+    #     IterationPath: "mwo-projekt"
+    #     GithubToken: "GithubToken"
+    #     WorkflowFileName: "maven.yml"
+    #   env:
+    #     PAT: ${{ secrets.DEVOPSPAT}}
+    #     GithubToken: ${{ secrets.GITHUBTOKEN}}
 
     # Dodaj inne kroki konieczne do uruchomienia Twojego środowiska, takie jak instalacja zależności, uruchomienie środowiska, itp.
