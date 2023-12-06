@@ -1,5 +1,5 @@
 
-# Projekt - MWO5 - Instrukcja
+# Projekt - MWO5 - Dokumentacja
 
 
 ## Uruchomienie
