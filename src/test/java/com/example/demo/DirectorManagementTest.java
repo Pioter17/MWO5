@@ -1,9 +1,6 @@
 package com.example.demo;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 //import org.junit.jupiter.api.AfterEach;
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +31,7 @@ public class DirectorManagementTest {
     protected static WebDriver driver;
     protected final String apiUrl = "http://localhost:8080";
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         WebDriverManager.firefoxdriver().setup();
         // Skonfiguruj i inicjalizuj przeglądarkę
