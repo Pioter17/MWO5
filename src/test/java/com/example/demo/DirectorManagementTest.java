@@ -12,6 +12,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -37,15 +38,16 @@ public class DirectorManagementTest {
     @BeforeAll
     public static void setUp() {
         WebDriverManager.firefoxdriver().setup();
-        Map<String, String> environment = new HashMap<>();
-        environment.put("DISPLAY", ":1");
-        GeckoDriverService service = new GeckoDriverService.Builder()
-                .usingAnyFreePort()
-                .withEnvironment(environment)
-                .build();
-        FirefoxDriver driver = new FirefoxDriver(service);
-
-        driver = new FirefoxDriver();
+//        Map<String, String> environment = new HashMap<>();
+//        environment.put("DISPLAY", ":1");
+//        GeckoDriverService service = new GeckoDriverService.Builder()
+//                .usingAnyFreePort()
+//                .withEnvironment(environment)
+//                .build();
+//        FirefoxDriver driver = new FirefoxDriver(service);
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments("--headless");
+        driver = new FirefoxDriver(options);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
     }
