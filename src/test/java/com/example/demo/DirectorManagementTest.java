@@ -179,8 +179,6 @@ public class DirectorManagementTest {
         WebElement deleteButton = driver.findElement(By.xpath("//table[@id='directorTable']/tbody/tr[td[1]='1']/td/button[text()='Delete']"));
         deleteButton.click();
 
-//        WebDriverWait wait = new WebDriverWait(driver, 10);
-//        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//table[@id='directorTable']/tbody/tr[td[1]='11']")));
 
         // Sprawdź, czy element nie istnieje
         Assertions.assertThrows(NoSuchElementException.class, () -> {
